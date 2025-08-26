@@ -9,12 +9,20 @@ class CounterView extends GetView<CounterController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // ilangin panah back default
         title: const Text('CounterView'),
         centerTitle: true,
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Get.offAllNamed('/home');
+        },
+        icon: const Icon(Icons.home),
+        label: const Text("Home"),
+      ),
       body: Center(
         child: Obx(() {
-          // Font size menyesuaikan dengan nilai (default 20 + nilai/5)
+          // Font size dinamis
           double fontSize = 50 + (controller.count.value / 5);
 
           return Column(
@@ -26,7 +34,7 @@ class CounterView extends GetView<CounterController> {
               ),
               const SizedBox(height: 20),
 
-              // Kalau nilai < 1 → muncul notif + tombol kurang/tambah
+              // Validasi minimal 1
               if (controller.count.value < 1) ...[
                 const Text(
                   "Nilai terlalu kecil! (minimal 1)",
@@ -38,14 +46,16 @@ class CounterView extends GetView<CounterController> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
+                  ElevatedButton.icon(
                     onPressed: controller.decrement,
-                    child: const Text('Kurang'),
+                    icon: const Icon(Icons.remove),
+                    label: const Text('Kurang'),
                   ),
                   const SizedBox(width: 20),
-                  ElevatedButton(
+                  ElevatedButton.icon(
                     onPressed: controller.increment,
-                    child: const Text('Tambah'),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Tambah'),
                   ),
                 ],
               ),
