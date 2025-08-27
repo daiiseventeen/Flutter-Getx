@@ -148,7 +148,7 @@ class FormPendaftaranView extends GetView<FormPendaftaranController> {
                           ),
                         ),
                       ],
-                    ),
+                    ),  
                   ),
                 ),
               ),
