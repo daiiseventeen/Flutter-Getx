@@ -1,11 +1,10 @@
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
+var selectedIndex = 0.obs;
 
-  final count = 0.obs;
+void changeIndex(int index) {
+  selectedIndex.value = index;
+}
 
-
-  
-  void increment() => count.value++;
 }

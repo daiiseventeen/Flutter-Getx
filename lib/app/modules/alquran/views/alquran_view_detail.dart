@@ -7,7 +7,7 @@ class AlquranViewDetail extends StatelessWidget {
   final Alquran surah;
   final AlquranController controller = Get.find<AlquranController>();
 
-  AlquranViewDetail({Key? key, required this.surah}) : super(key: key);
+  AlquranViewDetail({super.key, required this.surah});
 
   @override
   Widget build(BuildContext context) {

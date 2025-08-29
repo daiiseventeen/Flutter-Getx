@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/counter_controller.dart';
 
+// ignore: must_be_immutable
 class CounterView extends GetView<CounterController> {
-  const CounterView({super.key});
+  @override
+  CounterController controller = Get.put(CounterController());
+
+  CounterView({super.key});
 
   @override
   Widget build(BuildContext context) {

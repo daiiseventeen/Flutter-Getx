@@ -5,7 +5,7 @@ import 'package:getx1/app/modules/alquran/controllers/alquran_controller.dart';
 import 'package:getx1/app/modules/alquran/views/alquran_view_detail.dart';
 
 class AlquranView extends StatelessWidget {
-  AlquranView({Key? key}) : super(key: key);
+  AlquranView({super.key});
 
   final AlquranController controller = Get.put(AlquranController());
   final TextEditingController searchController = TextEditingController();

@@ -36,6 +36,11 @@ dependencies:
   cupertino_icons: ^1.0.8
   get: ^4.7.2
   intl: ^0.19.0
+  get_storage: ^2.1.1
+  convex_bottom_bar: ^3.2.0
+  google_fonts: ^6.1.0
+  image_picker: ^1.2.0
+  http: ^1.2.1
 
 dev_dependencies:
   flutter_test:

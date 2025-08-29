@@ -1,8 +1,14 @@
-import 'dart:ui';
-
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FormPendaftaranController extends GetxController {
+  // Stepper state
+  var currentStep = 0.obs;
+
+  // Text Editing Controllers
+  late TextEditingController nameController;
+  late TextEditingController phoneController;
+
   // Data fields
   RxString name = ''.obs;
   RxString gender = ''.obs;
@@ -15,20 +21,35 @@ class FormPendaftaranController extends GetxController {
   RxString dateOfBirthError = ''.obs;
   RxString phoneError = ''.obs;
 
-  final count = 0.obs;
+  @override
+  void onInit() {
+    super.onInit();
+    nameController = TextEditingController();
+    phoneController = TextEditingController();
 
-  void increment() => count.value++;
-
-  // Method untuk clear semua form
-  void clearForm() {
-    name.value = '';
-    gender.value = '';
-    dateOfBirth.value = null;
-    phone.value = '';
-    clearErrors();
+    // Listeners to sync text controllers with Rx variables
+    nameController.addListener(() => name.value = nameController.text);
+    phoneController.addListener(() => phone.value = phoneController.text);
   }
 
-  // Method untuk clear semua error
+  @override
+  void onClose() {
+    nameController.dispose();
+    phoneController.dispose();
+    super.onClose();
+  }
+
+  // Method to clear all form data
+  void clearForm() {
+    nameController.clear();
+    phoneController.clear();
+    gender.value = '';
+    dateOfBirth.value = null;
+    clearErrors();
+    currentStep.value = 0;
+  }
+
+  // Method to clear all error messages
   void clearErrors() {
     nameError.value = '';
     genderError.value = '';
@@ -36,13 +57,16 @@ class FormPendaftaranController extends GetxController {
     phoneError.value = '';
   }
 
-  // Method untuk validasi semua field
-  bool validateAll() {
+  // --- Step Validation ---
+
+  bool validateStep1() {
     clearErrors();
     bool isValid = true;
-
     if (name.value.isEmpty) {
       nameError.value = 'Nama tidak boleh kosong';
+      isValid = false;
+    } else if (name.value.length < 3) {
+      nameError.value = 'Nama minimal 3 karakter';
       isValid = false;
     }
 
@@ -51,6 +75,14 @@ class FormPendaftaranController extends GetxController {
       isValid = false;
     }
 
+    if (isValid) {
+      currentStep.value++;
+    }
+    return isValid;
+  }
+
+  bool validateStep2() {
+    bool isValid = true;
     if (dateOfBirth.value == null) {
       dateOfBirthError.value = 'Tanggal lahir harus dipilih';
       isValid = false;
@@ -70,10 +102,9 @@ class FormPendaftaranController extends GetxController {
     return isValid;
   }
 
-  // Method untuk submit form
+  // Method to submit the form
   void submitForm() {
-    if (validateAll()) {
-      // Navigasi ke halaman results dengan membawa data
+    if (validateStep1() && validateStep2()) {
       Get.toNamed(
         '/results',
         arguments: {
@@ -83,22 +114,31 @@ class FormPendaftaranController extends GetxController {
           'phone': phone.value,
         },
       );
-    } else {
+    } else if (nameError.value.isEmpty && genderError.value.isEmpty) {
+      // if step 1 is valid, but step 2 is not, we still need to check step 2
+      validateStep2();
       Get.snackbar(
         'Error',
-        'Mohon lengkapi semua field yang wajib diisi',
-        backgroundColor: const Color(0xFFF44336),
-        colorText: const Color(0xFFFFFFFF),
+        'Mohon periksa kembali isian Anda di langkah ini.',
+        backgroundColor: Colors.red.shade600,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } else {
+       Get.snackbar(
+        'Error',
+        'Mohon lengkapi semua field yang wajib diisi dari awal.',
+        backgroundColor: Colors.red.shade600,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
       );
     }
   }
 
-  // Helper method untuk format tanggal
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  // Method untuk mendapatkan umur dari tanggal lahir
   int? getAge() {
     if (dateOfBirth.value == null) return null;
     DateTime now = DateTime.now();
